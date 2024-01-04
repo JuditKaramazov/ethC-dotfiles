@@ -48,8 +48,8 @@ Considering this, and only if your boldness needs a fast & furious explanation o
 1. Clone this repository and execute the install script to symlink respective dotfiles into `~/` (which will run the installation of **Homebrew**, **Ruby** & **npm**):
 
     ```bash
-    git clone https://github.com/JuditKaramazov/dotfiles.git
-    cd dotfiles
+    git clone https://github.com/JuditKaramazov/ethC-dotfiles.git
+    cd ethC-dotfiles
 
     ./bin/install.sh
     ```
