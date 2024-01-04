@@ -1,0 +1,51 @@
+/*
+    ###############################
+    CSS rules for a less insane web
+    ###############################
+
+    Usage:
+    # Safari
+    Select as user style sheet in browser
+    or use defaults write... rules from dotfiles/osx.
+
+    # Chrome
+    Symlink to
+    Application Support/Google/Chrome/Default/User StyleSheets/Custom.css
+*/
+
+/* GOOGLE SEARCH
+   -----------------------------------------*/
+
+/* Ads. */
+#tads,
+#bottomads {
+  display: none !important;
+}
+
+/* TWITTER
+   -----------------------------------------*/
+
+div.promoted-tweet {
+  display: none !important;
+}
+
+/* Discover menu, Who to follow, Similiar, Trends. */
+[aria-label="Timeline: Trending now"],
+[aria-label="Who to follow"],
+[data-testid="DMDrawer"] {
+  visibility: hidden !important;
+}
+
+[data-testid="sidebarColumn"] form {
+  visibility: visible !important;
+}
+
+/* STACK OVERFLOW
+   -----------------------------------------*/
+
+.ad-container,
+#newsletter-ad,
+#recent-badges,
+.everyonelovesstackoverflow {
+  display: none !important;
+}
