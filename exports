@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+
+# Prefers US English and uses UTF-8.
+export LC_ALL="en_US.UTF-8"
+export LANG="en_US"
+
+# ---------------------------------------------------
+#  PATH
+# ---------------------------------------------------
+
+# Homebrew path differs between Intel/Apple Silicon.
+# See https://apple.stackexchange.com/questions/437618/why-is-homebrew-installed-in-opt-homebrew-on-apple-silicon-macs
+# Hardcoded paths because `brew --prefix ...` is slow.
+if [[ $(uname -m) == 'arm64' ]]; then
+  PATH_HOMEBREW=/opt/homebrew
+else
+  PATH_HOMEBREW=/usr/local
+fi
+
+export PATH_HOMEBREW
+
+PATH_OPENSSL=$PATH_HOMEBREW/opt/openssl/bin
+# PATH_RUBY=$(brew --prefix ruby)/bin
+# PATH_GEMS=$PATH_HOMEBREW/lib/ruby/gems/2.6.0/bin
+PATH_PYTHON=$PATH_HOMEBREW/opt/python/libexec/bin
+PATH_GO=$PATH_HOMEBREW/opt/go/libexec/bin
+#PATH_RUST=$HOME/.cargo/bin
+
+export GOPATH=$HOME/.go
+export PATH=$HOME/.bin:$PATH_HOMEBREW/bin:$PATH_OPENSSL:$PATH_PYTHON:$GOPATH/bin:$PATH_GO:$PATH
+# Defines CDPATHs which are autocompleted from when doing cd.
+export CDPATH=$CDPATH:~/Code
+
+# nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm.
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion.
+
+# Calling nvm use automatically in a directory with a .nvmrc file.
+# https://github.com/nvm-sh/nvm#zsh
+autoload -U add-zsh-hook
+
+load-nvmrc() {
+  local nvmrc_path
+  nvmrc_path="$(nvm_find_nvmrc)"
+
+  if [ -n "$nvmrc_path" ]; then
+    local nvmrc_node_version
+    nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
+
+    if [ "$nvmrc_node_version" = "N/A" ]; then
+      nvm install
+    elif [ "$nvmrc_node_version" != "$(nvm version)" ]; then
+      nvm use
+    fi
+  elif [ -n "$(PWD=$OLDPWD nvm_find_nvmrc)" ] && [ "$(nvm version)" != "$(nvm version default)" ]; then
+    echo "Reverting to nvm default version"
+    nvm use default
+  fi
+}
+
+add-zsh-hook chpwd load-nvmrc
+load-nvmrc
+
+
+# Defers loading until needed for faster shell startup.
+# declare -a NODE_GLOBALS=(`find ~/.nvm/versions/node -maxdepth 3 -type l -wholename '*/bin/*' | xargs -n1 basename | sort | uniq`)
+
+#NODE_GLOBALS+=("node")
+#NODE_GLOBALS+=("nvm")
+
+#load_nvm () {
+#  export NVM_DIR="$HOME/.nvm"
+#  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+#}
+
+#for cmd in "${NODE_GLOBALS[@]}"; do
+#  eval "${cmd}(){ unset -f ${NODE_GLOBALS}; load_nvm; ${cmd} \$@ }"
+#done
+
+# Pip should only run if there is a virtualenv currently activated.
+# export PIP_REQUIRE_VIRTUALENV=true
+# cache pip-installed packages to avoid re-downloading
+export PIP_DOWNLOAD_CACHE=$HOME/.pip/cache
+
+export GPG_TTY=$(tty)
