@@ -1,0 +1,97 @@
+########################################################################
+# Git Config
+########################################################################
+
+# Values coming from environment variables set in private file.
+# [user]
+#     email =
+#     name =
+
+[user]
+	name = Judit Lázaro
+	email = j.lazaromoyano7@gmail.com
+    signingKey = ed25519
+
+[commit]
+    gpgSign = true
+
+[github]
+    user = JuditKaramazov
+
+[credential]
+    helper = osxkeychain
+
+[core]
+    excludesfile = ~/.gitignore
+	quotepath = false
+
+    # Handles umlauts and such better on macOS.
+    #   For whatever crazy reason, this explicitly
+    #   has to be set to false so tracked files with
+    #   special characters don't get treated as untracked.
+    precomposeunicode = false
+
+    # Makes `git rebase` safer on macOS.
+    # More info: http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/
+    trustctime = false
+
+    # Be case sensitive on case insensitive systems.
+    ignorecase = false
+
+[alias]
+    c  = clone --recursive
+    co = checkout
+    l  = log --oneline --decorate -15
+    lo = log --oneline --decorate
+    s  = status -s
+
+    # Amends the currently staged files to the latest commit.
+    amend = commit --amend --reuse-message=HEAD
+
+    # Removes branches that have already been merged with master,
+    # AKA ‘delete merged’.
+    dm = "!git branch --merged main | grep -v '\\* main' | xargs -n 1 git branch -d"
+    dma = "!git branch --merged master | grep -v '\\* master' | xargs -n 1 git branch -d"
+    
+    uncommit = reset --soft HEAD^
+    unstage  = reset HEAD
+    yolo     = push --force
+
+[fetch]
+    prune = true
+
+[pull]
+	rebase = false
+
+[init]
+	defaultBranch = main
+
+[status]
+    showUntrackedFiles = all
+
+[color]
+    diff = auto
+    status = auto
+    branch = auto
+    interactive = auto
+    ui = auto
+
+# Sets Kaleidoscope as diff and merge tool.
+[diff]
+    tool = Kaleidoscope
+[difftool]
+    prompt = false
+[difftool "Kaleidoscope"]
+    cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
+[merge]
+	tool = Kaleidoscope
+[mergetool]
+    prompt = false
+[mergetool "Kaleidoscope"]
+	cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
+    trustExitCode = true
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process

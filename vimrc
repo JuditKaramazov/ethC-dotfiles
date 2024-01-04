@@ -1,0 +1,2 @@
+colo pablo
+syntax on
